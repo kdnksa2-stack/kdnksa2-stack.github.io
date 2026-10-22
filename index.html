@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>BeamCast</title>
+<meta name="description" content="Screen mirroring and casting between your devices.">
+<meta name="theme-color" content="#4b57f5">
+<meta name="color-scheme" content="light dark">
+<meta name="referrer" content="no-referrer">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="BeamCast">
+<style>
+  :root{--bg:#f4f5fa;--text:#12141c;--muted:#5b6274;--accent:#4b57f5}
+  @media (prefers-color-scheme:dark){:root{--bg:#0b0d13;--text:#e7e9f1;--muted:#9aa1b4;--accent:#7d87ff}}
+  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:16px;box-sizing:border-box}
+  .sp{width:34px;height:34px;margin:0 auto 14px;border-radius:50%;border:3px solid rgba(128,128,128,.25);border-top-color:var(--accent);animation:s .8s linear infinite}
+  @keyframes s{to{transform:rotate(360deg)}}
+  p{max-width:420px;margin:0 auto 14px;color:var(--muted)}
+  button{font:inherit;font-weight:600;padding:10px 18px;border-radius:11px;border:0;background:var(--accent);color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+<div id="boot" role="status" aria-live="polite">
+  <div class="sp" id="sp"></div>
+  <p id="msg">Loading BeamCast…</p>
+  <button id="retry" type="button" hidden>Try again</button>
+</div>
+<script>
+/*
+ * BeamCast app shell.
+ * It downloads the newest BeamCast page from YOUR Google Apps Script deployment, keeps a copy
+ * for offline start-up, and checks for updates every time it opens.
+ * Deploy a new version in Apps Script and every installed app updates itself.
+ *
+ * ▼▼▼ The only line you need to change: paste your Web App URL (ends with /exec) ▼▼▼
+ */
+var EXEC_URL = 'PASTE_YOUR_EXEC_URL_HERE';
+
+(function () {
+  'use strict';
+  var KEY = 'beamcast.app.html';
+  var msgEl = document.getElementById('msg'), retryBtn = document.getElementById('retry'), sp = document.getElementById('sp');
+
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.register('sw.js').catch(function () { /* offline start-up just won't be cached */ });
+  }
+  function say(text, canRetry) { msgEl.textContent = text; retryBtn.hidden = !canRetry; sp.hidden = !!canRetry; }
+  function getCached() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
+  function setCached(html) { try { localStorage.setItem(KEY, html); } catch (e) { /* storage full or blocked */ } }
+  function show(html) {
+    // document.open() during parsing would inject instead of replace, so wait until this shell has finished loading.
+    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { show(html); }, { once: true }); return; }
+    document.open(); document.write(html); document.close();
+  }
+
+  if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(EXEC_URL)) {
+    say('Setup needed: open index.html and paste your Apps Script Web App URL (it ends with /exec) into EXEC_URL.', false);
+    sp.hidden = true;
+    return;
+  }
+
+  function fetchLatest() {
+    // text/plain POST = CORS "simple request"; Apps Script web apps deployed for "Anyone" answer it.
+    return fetch(EXEC_URL, {
+      method: 'POST', body: JSON.stringify({ fn: 'offlineCopy', args: {} }),
+      cache: 'no-store', credentials: 'omit', redirect: 'follow'
+    }).then(function (r) {
+      if (!r.ok) throw new Error('HTTP ' + r.status);
+      return r.json();
+    }).then(function (j) {
+      var html = j && j.ok && j.data && j.data.html;
+      if (typeof html !== 'string' || html.indexOf('BeamCast') < 0 || html.length < 5000) throw new Error('Unexpected response');
+      return html;
+    });
+  }
+
+  function updateBanner() {
+    // Runs inside the already-shown app page: offer a one-tap reload to the new version.
+    var d = document.createElement('div');
+    d.setAttribute('role', 'status');
+    d.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:max(16px,env(safe-area-inset-bottom));z-index:3000;display:flex;gap:10px;align-items:center;background:#12141c;color:#fff;padding:10px 12px 10px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.3);font:14px system-ui,sans-serif;max-width:calc(100vw - 32px)';
+    var t = document.createElement('span'); t.textContent = 'A new version of BeamCast is ready.';
+    var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Update';
+    b.style.cssText = 'font:inherit;font-weight:700;border:0;border-radius:9px;padding:7px 12px;background:#7d87ff;color:#0b0d13;cursor:pointer';
+    b.onclick = function () { location.reload(); };
+    var x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Later');
+    x.style.cssText = 'font:20px/1 system-ui;border:0;background:none;color:#aaa;cursor:pointer;padding:0 4px';
+    x.onclick = function () { d.remove(); };
+    d.appendChild(t); d.appendChild(b); d.appendChild(x);
+    (document.body || document.documentElement).appendChild(d);
+  }
+
+  function firstLoad() {
+    say('Downloading BeamCast…', false);
+    fetchLatest().then(function (html) { setCached(html); show(html); }).catch(function (e) {
+      say(navigator.onLine
+        ? 'Could not reach the BeamCast server (' + e.message + '). Check that the Apps Script deployment is set to “Anyone” and that the URL is correct.'
+        : 'You are offline. Connect to the internet once so the app can download itself. After that it also opens offline.', true);
+    });
+  }
+  retryBtn.onclick = firstLoad;
+
+  var cached = getCached();
+  if (cached) {
+    // Start instantly from the saved copy (works offline), then look for a newer version.
+    fetchLatest().then(function (html) {
+      if (html !== cached) { setCached(html); updateBanner(); }
+    }).catch(function () { /* offline or server unreachable: keep using the saved copy */ });
+    show(cached);
+  } else {
+    firstLoad();
+  }
+})();
+</script>
+</body>
+</html>
