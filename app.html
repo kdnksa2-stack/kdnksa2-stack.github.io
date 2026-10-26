@@ -329,17 +329,17 @@ dialog::backdrop{background:rgba(5,7,12,.55)}
   </div>
   <article class="card" id="guideCard" aria-labelledby="guideT">
     <h3 id="guideT">Step-by-step guide <span class="chip" id="platChip"></span></h3>
-    <p class="small muted" style="margin:-4px 0 12px">Choose what you want to do:</p>
+    <p class="small muted" style="margin:-4px 0 12px">Choose your device:</p>
     <div class="tabs" role="tablist" aria-label="Guide topics">
-      <button role="tab" data-act="guideTab" data-v="computer"><svg><use href="#i-monitor"/></svg>Show my computer on a phone or TV</button>
-      <button role="tab" data-act="guideTab" data-v="phone"><svg><use href="#i-phone"/></svg>Stream from my phone</button>
-      <button role="tab" data-act="guideTab" data-v="mirror"><svg><use href="#i-cast"/></svg>Mirror my whole phone screen</button>
-      <button role="tab" data-act="guideTab" data-v="control"><svg><use href="#i-hand"/></svg>Touch &amp; control the other screen</button>
+      <button role="tab" data-act="guideTab" data-v="windows"><svg><use href="#i-monitor"/></svg>Windows</button>
+      <button role="tab" data-act="guideTab" data-v="mac"><svg><use href="#i-monitor"/></svg>macOS</button>
+      <button role="tab" data-act="guideTab" data-v="ios"><svg><use href="#i-phone"/></svg>iPhone / iPad</button>
+      <button role="tab" data-act="guideTab" data-v="android"><svg><use href="#i-phone"/></svg>Android</button>
       <button role="tab" data-act="guideTab" data-v="classroom"><svg><use href="#i-download"/></svg>Classroom panel, no internet</button>
     </div>
     <div id="guideBody" role="tabpanel" aria-live="polite">
       <div class="brandrow" id="brandRow" hidden>
-        <label class="field" style="max-width:320px">Your phone or tablet brand
+        <label class="field" style="max-width:320px">Your Android brand
           <select id="brandSel"></select>
         </label>
         <span class="small muted" id="brandHint"></span>
@@ -702,7 +702,7 @@ function platform() {
   const ua = navigator.userAgent;
   const android = /Android/.test(ua);
   const apple = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
-  return apple ? 'apple' : android ? 'android' : 'computer';
+  return apple ? 'apple' : android ? 'android' : /Macintosh/.test(ua) ? 'mac' : 'windows';
 }
 function brandFromModel(s) {
   s = String(s || '');
@@ -717,10 +717,10 @@ function brandFromModel(s) {
 }
 async function detectBrand() {
   const p = platform();
-  if (p === 'apple') return 'apple';
+  if (p === 'apple') return '';   // iPhone/iPad has its own guide tab; brands are for Android
   let model = '';
   try { if (navigator.userAgentData && navigator.userAgentData.getHighEntropyValues) model = (await navigator.userAgentData.getHighEntropyValues(['model'])).model || ''; } catch (e) { }
-  if (p === 'computer') return '';
+  if (p === 'windows' || p === 'mac') return '';
   return brandFromModel(model) || brandFromModel(navigator.userAgent) || (/SamsungBrowser/.test(navigator.userAgent) ? 'samsung' : '') || 'other';
 }
 
@@ -794,16 +794,6 @@ const BRANDS = {
     ],
     control: '**Smart Connect** (supported models) lets you use the phone from a Windows PC.'
   },
-  apple: {
-    name: 'iPhone / iPad',
-    mirror: [
-      'Make sure the iPhone/iPad and the receiver are on the **same Wi-Fi**. The receiver can be an Apple TV, an AirPlay-compatible smart TV, or a Mac with AirPlay Receiver turned on.',
-      'Open **Control Center**: swipe down from the top-right corner (or up from the bottom on iPhones with a Home button).',
-      'Tap **Screen Mirroring** (two overlapping rectangles) and choose the receiver. Enter the code if the TV shows one.',
-      'To stop: Control Center › Screen Mirroring › **Stop Mirroring**.'
-    ],
-    control: 'On a Mac with macOS 15 or later, **iPhone Mirroring** shows and controls your iPhone (where available). Apple doesn\'t allow controlling an iPhone from other devices.'
-  },
   other: {
     name: 'Other Android',
     mirror: [
@@ -814,59 +804,68 @@ const BRANDS = {
     control: '**scrcpy** (free, open source) can show and control almost any Android phone from a computer over USB or Wi-Fi.'
   }
 };
-const BRAND_ORDER = ['samsung', 'xiaomi', 'honor', 'huawei', 'pixel', 'oneplus', 'motorola', 'apple', 'other'];
+const BRAND_ORDER = ['samsung', 'xiaomi', 'honor', 'huawei', 'pixel', 'oneplus', 'motorola', 'other'];
 
 const TUT = {
-  computer: {
-    lead: 'Stream a **Windows PC or Mac** to a phone, tablet, TV browser or another computer.',
+  windows: {
+    lead: 'Share a **Windows PC or laptop** with a phone, tablet, TV or another computer, or watch another screen on it.',
     steps: () => [
-      'On the **computer**, open this website in **Chrome or Edge** (best audio support) and tap **Share this screen**. A code and a QR code appear.',
-      'On the **phone / tablet / TV**, point the **camera** at the QR code and open the link. Or open this website, tap **Watch on this device** and type the code.',
-      'Tap **Connect**. The viewing device shows a **2-digit number**.',
-      'On the computer, check that the **same number** is shown and press **Approve**.',
-      'On the computer, press **Start sharing**, choose **Entire screen**, a **Window** or a **Tab**, and tick **Share audio** if you want sound.',
-      'On the viewer, press **Fullscreen** for the best picture. Turn the phone sideways.'
+      'Open this website in **Chrome or Edge** and choose **Share this screen**. A code and a QR code appear.',
+      'On the other device, scan the QR code with its camera. Or open this website, choose **Watch on this device** and type the code.',
+      'Check that both screens show the **same 2-digit number**, then press **Approve**.',
+      'Press **Start sharing** and pick **Entire screen**, a **Window** or a **Tab**. Tick **Share system audio** for sound.',
+      'To **watch** another screen on this PC instead, choose **Watch on this device** and type the code.',
+      { alt: true, text: 'No internet, or showing the PC on a classroom panel or TV? Press **Win + K**, or use the free **BeamCast Desktop** app (see **Classroom panel, no internet**).' }
     ],
     notes: [
-      'Sound: sharing a **Chrome tab** with “Share tab audio” works on Windows and Mac. Whole-screen sound works on Windows only.',
-      'Keep the sharing page open. You can minimise other windows, but closing the page ends the stream.',
-      'If the picture freezes, press **Reconnect** on either device.'
+      'Install BeamCast: click the **install icon** in the Chrome or Edge address bar. It then opens like an app, even offline.',
+      'Sound from the whole screen or a tab works on Windows. Keep the sharing page open; closing it ends the stream.',
+      'The viewer can only **point & draw** if you allow it, never click or type. For full remote control use **Quick Assist** (built into Windows) or **Chrome Remote Desktop**.'
     ]
   },
-  phone: {
-    lead: 'Phones and tablets can send their **camera** (plus microphone) through this site, because phone browsers do not allow websites to capture the screen.',
+  mac: {
+    lead: 'Share a **Mac** with a phone, tablet, TV or another computer, or watch another screen on it.',
     steps: () => [
-      'On the **phone**, open this website and tap **Share this screen**. **Camera** mode is selected automatically.',
-      'On the **other device** (computer, TV browser, tablet), open this website, tap **Watch on this device** and type the code, or scan the QR code.',
-      'On the phone, check the **2-digit number** and press **Approve**.',
-      'Press **Start camera** and allow camera access. Use **Switch camera** for the front/back camera and **Microphone** for sound.',
-      { alt: true, text: 'Want to show the **phone\'s screen** (apps, photos, games) instead of the camera? Use the **“Mirror my whole phone screen”** tab, which uses the phone\'s own mirroring feature.' }
+      'Open this website in **Chrome**, **Edge** or **Safari** and choose **Share this screen**. A code and a QR code appear.',
+      'On the other device, scan the QR code with its camera. Or open this website, choose **Watch on this device** and type the code.',
+      'Check that both screens show the **same 2-digit number**, then press **Approve**.',
+      'Press **Start sharing** and pick the screen, a window or a tab.',
+      'First time only: macOS asks for permission. Open **System Settings › Privacy & Security › Screen & System Audio Recording**, turn on your browser, then reload this page.',
+      { alt: true, text: 'Showing the Mac on an **Apple TV** or AirPlay TV? Open **Control Centre › Screen Mirroring** and pick the TV. This site isn\'t needed for that.' }
     ],
     notes: [
-      'Keep the phone unlocked with this page open. Locking the screen or switching apps can pause the camera.',
-      'If camera access was refused: Android: tap the lock icon in the address bar › Permissions. iPhone: Settings › Safari › Camera.'
+      'Install BeamCast: in Safari choose **File › Add to Dock**; in Chrome click the **install icon** in the address bar.',
+      'Sound: share a **Chrome tab** and tick **Share tab audio**. macOS doesn\'t let websites capture sound from the whole screen.',
+      'For full remote control of a Mac use **Screen Sharing** (built into macOS) or **Chrome Remote Desktop**.'
     ]
   },
-  mirror: {
+  ios: {
+    lead: 'On **iPhone and iPad**, websites can\'t capture the screen. You can **watch** other screens, send the **camera**, and mirror the whole screen with **AirPlay**.',
+    steps: () => [
+      '**Watch:** scan the QR code on the sharing device with the **Camera** app. Or open this website in Safari, choose **Watch on this device** and type the code.',
+      '**Send the camera:** choose **Share this screen**. Camera mode is picked automatically. Press **Start camera** and allow access.',
+      '**Mirror the whole screen** to an Apple TV, AirPlay TV or Mac: open **Control Centre**, tap **Screen Mirroring** and pick it. To stop, tap **Stop Mirroring**.',
+      '**Install BeamCast:** in Safari tap **Share › Add to Home Screen**. It then opens like an app, even offline.'
+    ],
+    notes: [
+      'Camera refused? Go to **Settings › Safari › Camera** and allow it.',
+      'Keep the iPhone or iPad unlocked with BeamCast open while sending the camera.',
+      'On a Mac with macOS 15 or later, **iPhone Mirroring** can show and control your iPhone.'
+    ]
+  },
+  android: {
     brand: true,
-    lead: 'Shows **everything on your phone screen** on a TV or display, using the phone\'s **built-in** mirroring feature. This site is not needed for this.',
-    steps: (b) => BRANDS[b].mirror,
-    notes: [
-      'The TV must support Chromecast / Google TV, Miracast or AirPlay (for iPhone). Most smart TVs support at least one.',
-      'Built-in mirroring works only on the **same Wi-Fi** network. To show a phone\'s camera to someone far away, use **Stream from my phone** with this site.'
-    ]
-  },
-  control: {
-    lead: 'Websites are **not allowed** to move the mouse, tap or type on another device. Browsers block this for security. Here is what you **can** do:',
+    lead: 'On **Android phones and tablets**, websites can\'t capture the screen. You can **watch** other screens, send the **camera**, and mirror the whole screen with the phone\'s built-in casting.',
     steps: (b) => [
-      'With this site: the viewer taps **Point & draw** and draws or points on the picture. The sharer sees it on the preview, or in the **Floating view** window that stays on top of other apps. Good for “click here” help.',
-      'The sharer controls whether the viewer may point & draw (**“Let the viewer point & draw”**). The viewer can never click or type on the sharer\'s device.',
-      { alt: true, text: 'Full remote control of a **computer** from a phone or another computer: use **Chrome Remote Desktop** (free; Windows and Mac, controlled from Android, iPhone or a browser) or **Quick Assist** (built into Windows).' },
-      { alt: true, text: 'Control a **phone** from a computer: ' + BRANDS[b].control }
-    ],
-    brand: true,
-    notes: [
-      'Only give remote control to people you trust. Anyone with control can see and change everything on the device.'
+      '**Watch:** scan the QR code on the sharing device with the camera. Or open this website in Chrome, choose **Watch on this device** and type the code.',
+      '**Send the camera:** choose **Share this screen**. Camera mode is picked automatically. Press **Start camera** and allow access.',
+      '**Install BeamCast:** download the **BeamCast Android app** from the BeamCast website, or in Chrome tap **⋮ › Install app**.',
+      '**Mirror the whole screen** to a TV (' + BRANDS[b].name + '): ' + BRANDS[b].mirror[0]
+    ].concat(BRANDS[b].mirror.slice(1)),
+    notes: (b) => [
+      'Camera refused? Tap the **lock icon** in Chrome\'s address bar › **Permissions** and allow the camera.',
+      'Built-in mirroring needs the phone and TV on the **same Wi-Fi**. To show the camera to someone far away, use BeamCast.',
+      'Control the phone from a computer: ' + BRANDS[b].control
     ]
   },
   classroom: {
@@ -886,7 +885,7 @@ const TUT = {
     ]
   }
 };
-let guideState = { tab: 'computer', brand: 'samsung' };
+let guideState = { tab: 'windows', brand: 'samsung' };
 function richText(el, s) {
   // **bold** → <b>; everything else as text nodes.
   String(s).split('**').forEach((part, i) => { if (part) el.appendChild(i % 2 ? h('b', { text: part }) : document.createTextNode(part)); });
@@ -911,8 +910,9 @@ function renderGuide(tab, brand) {
   const ol = $('guideSteps'); ol.textContent = '';
   t.steps(b).forEach((s) => { const alt = typeof s === 'object'; ol.appendChild(richText(h('li', alt ? { cls: 'alt' } : null), alt ? s.text : s)); });
   const ul = $('guideNotes'); ul.textContent = '';
-  (t.notes || []).forEach((n) => ul.appendChild(richText(h('li'), n)));
-  $('guideNotesWrap').hidden = !(t.notes && t.notes.length);
+  const notes = typeof t.notes === 'function' ? t.notes(b) : (t.notes || []);
+  notes.forEach((n) => ul.appendChild(richText(h('li'), n)));
+  $('guideNotesWrap').hidden = !notes.length;
 }
 function frameBlocksCapture() {
   try {
@@ -2348,9 +2348,9 @@ function init() {
   const plat = platform();
   BRAND_ORDER.forEach((k) => $('brandSel').appendChild(h('option', { value: k, text: BRANDS[k].name })));
   $('brandSel').addEventListener('change', (e) => renderGuide(null, e.target.value));
-  renderGuide(plat === 'computer' ? 'computer' : 'phone', plat === 'apple' ? 'apple' : 'samsung');
+  renderGuide({ windows: 'windows', mac: 'mac', apple: 'ios', android: 'android' }[plat], 'samsung');
   detectBrand().then((b) => { if (b) { guideState.detected = b; renderGuide(null, b); } }).catch(() => { });
-  $('platChip').textContent = { android: 'Android phone/tablet', apple: 'iPhone / iPad', computer: 'Windows / Mac' }[plat];
+  $('platChip').textContent = { android: 'Android', apple: 'iPhone / iPad', mac: 'Mac', windows: 'Windows' }[plat];
   hostInk = makeInk($('hostInk'), $('hostPreview'));
   rxInk = makeInk($('rxInk'), $('rxVideo'));
   wireViewerInk();

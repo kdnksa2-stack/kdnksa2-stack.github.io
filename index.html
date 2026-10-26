@@ -28,6 +28,7 @@
     </a>
     <nav aria-label="Main" data-i18n-attr="aria-label:navLabel">
       <ul>
+        <li><a href="#devices" data-i18n="navDevices">Devices</a></li>
         <li><a href="#classroom" data-i18n="navClassroom">Classroom</a></li>
         <li><a href="#online" data-i18n="navOnline">Online</a></li>
         <li><a href="#safety" data-i18n="navSafety">Safety</a></li>
@@ -61,7 +62,46 @@
     </div>
   </section>
 
-  <section id="classroom" class="band" aria-labelledby="classT">
+  <section id="devices" class="band" aria-labelledby="devT">
+    <div class="wrap">
+      <h2 id="devT" data-i18n="devT">Get BeamCast on your device</h2>
+      <p data-i18n="devP">Free on every device, with no account.</p>
+      <ul class="cards devices">
+        <li>
+          <h3 data-i18n="dWinT">Windows</h3>
+          <p data-i18n="dWinP">Share your screen or watch. For classrooms without internet, get the Windows app.</p>
+          <div class="acts">
+            <a class="btn primary" href="#classroom" data-i18n="dWinBtn">Windows app</a>
+            <a class="btn" href="app.html" data-i18n="dOpen">Open online</a>
+          </div>
+          <p class="small" data-i18n="dWinTip">To install the online version: click the install icon in the Chrome or Edge address bar.</p>
+        </li>
+        <li>
+          <h3 data-i18n="dMacT">macOS</h3>
+          <p data-i18n="dMacP">Share your Mac's screen or watch, in Chrome, Edge or Safari.</p>
+          <div class="acts"><a class="btn primary" href="app.html" data-i18n="dOpen">Open online</a></div>
+          <p class="small" data-i18n="dMacTip">To install: in Safari choose File › Add to Dock, or in Chrome click the install icon in the address bar.</p>
+        </li>
+        <li>
+          <h3 data-i18n="dIosT">iPhone / iPad</h3>
+          <p data-i18n="dIosP">Watch other screens, send your camera, or mirror the whole screen with AirPlay.</p>
+          <div class="acts"><a class="btn primary" href="app.html" data-i18n="dOpen">Open online</a></div>
+          <p class="small" data-i18n="dIosTip">To install: open this site in Safari, tap Share, then Add to Home Screen.</p>
+        </li>
+        <li>
+          <h3 data-i18n="dAndT">Android</h3>
+          <p data-i18n="dAndP">Watch other screens, send your camera, or mirror the whole screen to a TV.</p>
+          <div class="acts">
+            <a class="btn primary" href="android/BeamCast.apk" download data-i18n="dAndBtn">Android app (18 MB)</a>
+            <a class="btn" href="app.html" data-i18n="dOpen">Open online</a>
+          </div>
+          <p class="small" data-i18n="dAndTip">If Android asks, allow installing apps from your browser. Or in Chrome tap ⋮ › Install app.</p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="classroom" aria-labelledby="classT">
     <div class="wrap">
       <h2 id="classT" data-i18n="classT">Classroom: laptop to panel, no internet</h2>
       <p data-i18n="classP">The free BeamCast Desktop app for Windows connects the laptop straight to a Promethean panel, smart TV or projector. It doesn't need the school Wi-Fi or the internet.</p>
@@ -93,7 +133,7 @@
     </div>
   </section>
 
-  <section id="online" aria-labelledby="onlineT">
+  <section id="online" class="band" aria-labelledby="onlineT">
     <div class="wrap">
       <h2 id="onlineT" data-i18n="onlineT">Online: any device, anywhere</h2>
       <p data-i18n="onlineP">With internet, BeamCast works in the browser on computers, phones, tablets and TVs. Nothing to install.</p>
@@ -107,7 +147,7 @@
     </div>
   </section>
 
-  <section id="safety" class="band" aria-labelledby="safeT">
+  <section id="safety" aria-labelledby="safeT">
     <div class="wrap">
       <h2 id="safeT" data-i18n="safeT">Safe by design</h2>
       <ul class="cards">
@@ -131,7 +171,7 @@
     </div>
   </section>
 
-  <section id="help" aria-labelledby="helpT">
+  <section id="help" class="band" aria-labelledby="helpT">
     <div class="wrap">
       <h2 id="helpT" data-i18n="helpT">Help</h2>
       <details>

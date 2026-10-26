@@ -6,7 +6,17 @@
   // Arabic text. **bold** and `code` are turned into elements (never parsed as HTML).
   var AR = {
     skip: 'انتقل إلى المحتوى',
-    navLabel: 'القائمة الرئيسية', navClassroom: 'الفصل', navOnline: 'عبر الإنترنت', navSafety: 'الأمان', navHelp: 'مساعدة',
+    navLabel: 'القائمة الرئيسية', navDevices: 'الأجهزة', navClassroom: 'الفصل',
+    devT: 'احصل على BeamCast على جهازك', devP: 'مجاني على كل الأجهزة، بلا حساب.',
+    dOpen: 'افتح عبر الإنترنت',
+    dWinT: 'Windows', dWinP: 'شارك شاشتك أو شاهد. للفصول بدون إنترنت، نزّل تطبيق Windows.', dWinBtn: 'تطبيق Windows',
+    dWinTip: 'لتثبيت النسخة عبر الإنترنت: اضغط أيقونة التثبيت في شريط العنوان في Chrome أو Edge.',
+    dMacT: 'macOS', dMacP: 'شارك شاشة جهاز Mac أو شاهد، في Chrome أو Edge أو Safari.',
+    dMacTip: 'للتثبيت: في Safari اختر File › Add to Dock، أو في Chrome اضغط أيقونة التثبيت في شريط العنوان.',
+    dIosT: 'iPhone / iPad', dIosP: 'شاهد الشاشات الأخرى، أو أرسل الكاميرا، أو اعرض الشاشة كاملة عبر AirPlay.',
+    dIosTip: 'للتثبيت: افتح هذا الموقع في Safari، واضغط «مشاركة» ثم «إضافة إلى الشاشة الرئيسية».',
+    dAndT: 'Android', dAndP: 'شاهد الشاشات الأخرى، أو أرسل الكاميرا، أو اعرض الشاشة كاملة على التلفاز.', dAndBtn: 'تطبيق Android (18 ميغابايت)',
+    dAndTip: 'إذا طلب Android ذلك، فاسمح بتثبيت التطبيقات من المتصفح. أو في Chrome اضغط ⋮ › تثبيت التطبيق.', navOnline: 'عبر الإنترنت', navSafety: 'الأمان', navHelp: 'مساعدة',
     heroT: 'اعرض شاشتك على أي شاشة',
     heroP: 'اعرض شاشة حاسوب المعلّم على السبورة التفاعلية في الفصل، أو شارك الشاشة مع أي هاتف أو جهاز لوحي أو تلفاز. مجاني، بلا حساب وبلا تتبّع.',
     ctaClass: 'الفصل: بدون إنترنت', ctaOnline: 'افتح BeamCast عبر الإنترنت',
