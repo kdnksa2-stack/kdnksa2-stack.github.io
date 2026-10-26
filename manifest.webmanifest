@@ -3,7 +3,7 @@
   "name": "BeamCast — Screen Mirroring",
   "short_name": "BeamCast",
   "description": "Mirror your screen or camera to any device with a code or QR code.",
-  "start_url": "./",
+  "start_url": "./app.html",
   "scope": "./",
   "display": "standalone",
   "orientation": "any",

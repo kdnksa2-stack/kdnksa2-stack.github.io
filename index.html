@@ -1,121 +1,164 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" dir="ltr">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>BeamCast</title>
-<meta name="description" content="Screen mirroring and casting between your devices.">
-<meta name="theme-color" content="#4b57f5">
-<meta name="color-scheme" content="light dark">
+<!-- Strict policy: only files from this site may load. No outside scripts, fonts, trackers or frames. -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'self'; manifest-src 'self'; worker-src 'self'; base-uri 'none'; form-action 'none'; upgrade-insecure-requests">
 <meta name="referrer" content="no-referrer">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#4b57f5">
+<meta name="description" content="BeamCast shows a laptop screen on a classroom panel, TV or any device. Works without internet. Free, private and safe.">
+<title>BeamCast: show your screen on any display</title>
+<script src="launch.js"></script>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="icon" type="image/png" href="icon-192.png">
 <link rel="apple-touch-icon" href="icon-192.png">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-title" content="BeamCast">
-<style>
-  :root{--bg:#f4f5fa;--text:#12141c;--muted:#5b6274;--accent:#4b57f5}
-  @media (prefers-color-scheme:dark){:root{--bg:#0b0d13;--text:#e7e9f1;--muted:#9aa1b4;--accent:#7d87ff}}
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:var(--bg);color:var(--text);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:center;padding:16px;box-sizing:border-box}
-  .sp{width:34px;height:34px;margin:0 auto 14px;border-radius:50%;border:3px solid rgba(128,128,128,.25);border-top-color:var(--accent);animation:s .8s linear infinite}
-  @keyframes s{to{transform:rotate(360deg)}}
-  p{max-width:420px;margin:0 auto 14px;color:var(--muted)}
-  button{font:inherit;font-weight:600;padding:10px 18px;border-radius:11px;border:0;background:var(--accent);color:#fff;cursor:pointer}
-</style>
+<link rel="stylesheet" href="styles.css">
+<script src="site.js" defer></script>
 </head>
 <body>
-<div id="boot" role="status" aria-live="polite">
-  <div class="sp" id="sp"></div>
-  <p id="msg">Loading BeamCast…</p>
-  <button id="retry" type="button" hidden>Try again</button>
-</div>
-<script>
-/*
- * BeamCast app shell.
- * It downloads the newest BeamCast page from YOUR Google Apps Script deployment, keeps a copy
- * for offline start-up, and checks for updates every time it opens.
- * Deploy a new version in Apps Script and every installed app updates itself.
- *
- * ▼▼▼ The only line you need to change: paste your Web App URL (ends with /exec) ▼▼▼
- */
-var EXEC_URL = 'https://script.google.com/macros/s/AKfycbz1gZUumytuftPWRZcW-Gb9P7usCzyJS-83R4lMTyYFhke-0Oxf7YOTgh_2BvfhsPqCkA/exec';
+<a class="skip" href="#main" data-i18n="skip">Skip to content</a>
 
-(function () {
-  'use strict';
-  var KEY = 'beamcast.app.html';
-  var msgEl = document.getElementById('msg'), retryBtn = document.getElementById('retry'), sp = document.getElementById('sp');
+<header class="top">
+  <div class="wrap top-in">
+    <a class="brand" href="./" aria-label="BeamCast home">
+      <img src="icon-192.png" alt="" width="32" height="32">
+      <span>BeamCast</span>
+    </a>
+    <nav aria-label="Main" data-i18n-attr="aria-label:navLabel">
+      <ul>
+        <li><a href="#classroom" data-i18n="navClassroom">Classroom</a></li>
+        <li><a href="#online" data-i18n="navOnline">Online</a></li>
+        <li><a href="#safety" data-i18n="navSafety">Safety</a></li>
+        <li><a href="#help" data-i18n="navHelp">Help</a></li>
+      </ul>
+    </nav>
+    <button type="button" class="lang" id="langBtn" lang="ar" aria-label="عرض الموقع بالعربية">العربية</button>
+  </div>
+</header>
 
-  if ('serviceWorker' in navigator) {
-    navigator.serviceWorker.register('sw.js').catch(function () { /* offline start-up just won't be cached */ });
-  }
-  function say(text, canRetry) { msgEl.textContent = text; retryBtn.hidden = !canRetry; sp.hidden = !!canRetry; }
-  function getCached() { try { return localStorage.getItem(KEY); } catch (e) { return null; } }
-  function setCached(html) { try { localStorage.setItem(KEY, html); } catch (e) { /* storage full or blocked */ } }
-  function show(html) {
-    // document.open() during parsing would inject instead of replace, so wait until this shell has finished loading.
-    if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', function () { show(html); }, { once: true }); return; }
-    document.open(); document.write(html); document.close();
-  }
+<main id="main" tabindex="-1">
+  <section class="hero" aria-labelledby="heroT">
+    <div class="wrap">
+      <h1 id="heroT" data-i18n="heroT">Show your screen on any display</h1>
+      <p class="lead" data-i18n="heroP">Put a teacher's laptop on the classroom panel, or share a screen with any phone, tablet or TV. Free, with no account and no tracking.</p>
+      <div class="cta">
+        <a class="btn primary" href="#classroom">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          <span data-i18n="ctaClass">Classroom: no internet needed</span>
+        </a>
+        <a class="btn" href="app.html">
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M2 8V6a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-6M2 12a9 9 0 0 1 8 8M2 16a5 5 0 0 1 4 4M2 20h.01"/></svg>
+          <span data-i18n="ctaOnline">Open BeamCast online</span>
+        </a>
+      </div>
+      <ul class="facts" aria-label="Highlights" data-i18n-attr="aria-label:factsLabel">
+        <li data-i18n="fact1">No internet or Wi-Fi network needed in class</li>
+        <li data-i18n="fact2">No sign-up, no ads, no tracking</li>
+        <li data-i18n="fact3">Encrypted connection</li>
+      </ul>
+    </div>
+  </section>
 
-  if (!/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/.test(EXEC_URL)) {
-    say('Setup needed: open index.html and paste your Apps Script Web App URL (it ends with /exec) into EXEC_URL.', false);
-    sp.hidden = true;
-    return;
-  }
+  <section id="classroom" class="band" aria-labelledby="classT">
+    <div class="wrap">
+      <h2 id="classT" data-i18n="classT">Classroom: laptop to panel, no internet</h2>
+      <p data-i18n="classP">The free BeamCast Desktop app for Windows connects the laptop straight to a Promethean panel, smart TV or projector. It doesn't need the school Wi-Fi or the internet.</p>
 
-  function fetchLatest() {
-    // text/plain POST = CORS "simple request"; Apps Script web apps deployed for "Anyone" answer it.
-    return fetch(EXEC_URL, {
-      method: 'POST', body: JSON.stringify({ fn: 'offlineCopy', args: {} }),
-      cache: 'no-store', credentials: 'omit', redirect: 'follow'
-    }).then(function (r) {
-      if (!r.ok) throw new Error('HTTP ' + r.status);
-      return r.json();
-    }).then(function (j) {
-      var html = j && j.ok && j.data && j.data.html;
-      if (typeof html !== 'string' || html.indexOf('BeamCast') < 0 || html.length < 5000) throw new Error('Unexpected response');
-      return html;
-    });
-  }
+      <div class="download" id="download">
+        <div>
+          <h3 data-i18n="dlT">BeamCast Desktop for Windows</h3>
+          <p class="small" data-i18n="dlP">Windows 10 and 11. One file, nothing to install. Download it at home or anywhere with internet, then copy it to the laptop.</p>
+          <dl class="meta">
+            <div><dt data-i18n="dlVersion">Version</dt><dd id="dlVersion">—</dd></div>
+            <div><dt data-i18n="dlSize">Size</dt><dd id="dlSize">—</dd></div>
+            <div class="hash"><dt data-i18n="dlHash">SHA-256 checksum</dt><dd><code id="dlHash">—</code></dd></div>
+          </dl>
+        </div>
+        <a class="btn primary big" href="BeamCastDesktop.exe" download>
+          <svg aria-hidden="true" viewBox="0 0 24 24"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>
+          <span data-i18n="dlBtn">Download for Windows</span>
+        </a>
+      </div>
 
-  function updateBanner() {
-    // Runs inside the already-shown app page: offer a one-tap reload to the new version.
-    var d = document.createElement('div');
-    d.setAttribute('role', 'status');
-    d.style.cssText = 'position:fixed;left:50%;transform:translateX(-50%);bottom:max(16px,env(safe-area-inset-bottom));z-index:3000;display:flex;gap:10px;align-items:center;background:#12141c;color:#fff;padding:10px 12px 10px 16px;border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.3);font:14px system-ui,sans-serif;max-width:calc(100vw - 32px)';
-    var t = document.createElement('span'); t.textContent = 'A new version of BeamCast is ready.';
-    var b = document.createElement('button'); b.type = 'button'; b.textContent = 'Update';
-    b.style.cssText = 'font:inherit;font-weight:700;border:0;border-radius:9px;padding:7px 12px;background:#7d87ff;color:#0b0d13;cursor:pointer';
-    b.onclick = function () { location.reload(); };
-    var x = document.createElement('button'); x.type = 'button'; x.textContent = '×'; x.setAttribute('aria-label', 'Later');
-    x.style.cssText = 'font:20px/1 system-ui;border:0;background:none;color:#aaa;cursor:pointer;padding:0 4px';
-    x.onclick = function () { d.remove(); };
-    d.appendChild(t); d.appendChild(b); d.appendChild(x);
-    (document.body || document.documentElement).appendChild(d);
-  }
+      <h3 data-i18n="howT">How to use it in class</h3>
+      <ol class="steps">
+        <li data-i18n="step1">On the Promethean panel, open the <b>Screen Share</b> app.</li>
+        <li data-i18n="step2">On the laptop, open <b>BeamCastDesktop.exe</b> and click <b>Find panel</b>.</li>
+        <li data-i18n="step3">Click the panel's name in the list. The laptop screen appears on the panel.</li>
+        <li data-i18n="step4">To stop, click <b>Find panel</b> again and choose <b>Disconnect</b>.</li>
+      </ol>
+      <p class="note" data-i18n="firstRun">First time only: if Windows says “Windows protected your PC”, click <b>More info</b>, then <b>Run anyway</b>. This appears for new apps that aren't sold in a store.</p>
+    </div>
+  </section>
 
-  function firstLoad() {
-    say('Downloading BeamCast…', false);
-    fetchLatest().then(function (html) { setCached(html); show(html); }).catch(function (e) {
-      say(navigator.onLine
-        ? 'Could not reach the BeamCast server (' + e.message + '). Check that the Apps Script deployment is set to “Anyone” and that the URL is correct.'
-        : 'You are offline. Connect to the internet once so the app can download itself. After that it also opens offline.', true);
-    });
-  }
-  retryBtn.onclick = firstLoad;
+  <section id="online" aria-labelledby="onlineT">
+    <div class="wrap">
+      <h2 id="onlineT" data-i18n="onlineT">Online: any device, anywhere</h2>
+      <p data-i18n="onlineP">With internet, BeamCast works in the browser on computers, phones, tablets and TVs. Nothing to install.</p>
+      <ol class="steps">
+        <li data-i18n="on1">On the device you want to show, open BeamCast and choose <b>Share this screen</b>. A code and QR code appear.</li>
+        <li data-i18n="on2">On the screen that will watch, scan the QR code, or open BeamCast, choose <b>Watch on this device</b> and type the code.</li>
+        <li data-i18n="on3">Check that both screens show the same 2-digit number, approve, and start sharing.</li>
+      </ol>
+      <p><a class="btn" href="app.html" data-i18n="openApp">Open BeamCast online</a></p>
+      <p class="small" data-i18n="installTip">Tip: in Chrome or Edge, use “Install app” in the address bar or menu to add BeamCast to your device. It then opens even when you're offline.</p>
+    </div>
+  </section>
 
-  var cached = getCached();
-  if (cached) {
-    // Start instantly from the saved copy (works offline), then look for a newer version.
-    fetchLatest().then(function (html) {
-      if (html !== cached) { setCached(html); updateBanner(); }
-    }).catch(function () { /* offline or server unreachable: keep using the saved copy */ });
-    show(cached);
-  } else {
-    firstLoad();
-  }
-})();
-</script>
+  <section id="safety" class="band" aria-labelledby="safeT">
+    <div class="wrap">
+      <h2 id="safeT" data-i18n="safeT">Safe by design</h2>
+      <ul class="cards">
+        <li>
+          <h3 data-i18n="s1T">Nothing about you is collected</h3>
+          <p data-i18n="s1P">No accounts, no cookies, no ads and no analytics. This website loads nothing from other companies.</p>
+        </li>
+        <li>
+          <h3 data-i18n="s2T">Only who you allow</h3>
+          <p data-i18n="s2P">In class, you choose the panel yourself. Online, every viewer must be approved after checking a matching number. Codes expire after 10 minutes.</p>
+        </li>
+        <li>
+          <h3 data-i18n="s3T">Encrypted</h3>
+          <p data-i18n="s3P">Wireless display uses Windows' built-in encrypted link. Online casting is encrypted end to end and goes straight between the two devices.</p>
+        </li>
+        <li>
+          <h3 data-i18n="s4T">Check your download</h3>
+          <p data-i18n="s4P">Compare the SHA-256 checksum above with the file you downloaded. In PowerShell, run: <code>Get-FileHash BeamCastDesktop.exe</code></p>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section id="help" aria-labelledby="helpT">
+    <div class="wrap">
+      <h2 id="helpT" data-i18n="helpT">Help</h2>
+      <details>
+        <summary data-i18n="h1Q">The panel doesn't appear in the list</summary>
+        <p data-i18n="h1A">Make sure the Screen Share app is open on the panel and allows Windows / Miracast devices. Switch Wi-Fi on in Windows (it doesn't need to be connected to a network) and stay within a few metres of the panel.</p>
+      </details>
+      <details>
+        <summary data-i18n="h2Q">The app says the laptop can't do wireless display</summary>
+        <p data-i18n="h2A">Use the second option in the app: if the laptop and panel share a Wi-Fi, open the panel's browser and type the address and code the app shows. Or connect an HDMI cable.</p>
+      </details>
+      <details>
+        <summary data-i18n="h3Q">The picture lags</summary>
+        <p data-i18n="h3A">Wireless display is the smoothest option. In the Wi-Fi option, choose <b>Picture: Smooth</b>, and move closer to the router.</p>
+      </details>
+      <details>
+        <summary data-i18n="h4Q">Is this website always available?</summary>
+        <p data-i18n="h4A">Yes. It is a simple static site on GitHub Pages with secure HTTPS and no server to break. After your first visit it also opens without internet. The classroom app never needs this website once downloaded.</p>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <p data-i18n="foot">BeamCast is free. This site uses no cookies and collects no personal data.</p>
+    <p class="small" id="offlineNote" hidden data-i18n="offline">You are offline. This page was opened from your device.</p>
+  </div>
+</footer>
 </body>
 </html>
