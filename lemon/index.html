@@ -7,7 +7,16 @@
 <meta name="description" content="خطة عملية مرقّمة من نهاية نوفمبر حتى فبراير لتقوية شجرة ليمون بعد القطع وتهيئتها للإزهار في جدة.">
 <meta property="og:title" content="خطة تعافي شجرة الليمون">
 <meta property="og:description" content="١٦ خطوة من نهاية نوفمبر حتى فبراير لتقوية الشجرة وتهيئتها للإزهار.">
-<meta name="theme-color" content="#1c5a35">
+<meta name="theme-color" content="#1c5a35" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#10301e" media="(prefers-color-scheme: dark)">
+<meta name="format-detection" content="telephone=no">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="شجرة الليمون">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;600&family=Noto+Kufi+Arabic:wght@700;800&display=swap" rel="stylesheet">
@@ -47,7 +56,9 @@
   --concrete:#6f6b64;--trunk:#8c7c66;--water:#5aaee0;--root:#8f7a5d;--dry:#7f766b;
 }
 *{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
 html{scroll-padding-top:72px;-webkit-text-size-adjust:100%}
+a,button,label{-webkit-tap-highlight-color:transparent;touch-action:manipulation}
 body{margin:0;background:var(--bg);color:var(--ink);font:17px/1.8 "IBM Plex Sans Arabic",Tahoma,"Segoe UI",sans-serif}
 img{max-width:100%;height:auto;display:block}
 a{color:inherit}
@@ -78,7 +89,20 @@ h3{font-size:clamp(20px,2.4vw,24px);line-height:1.45;margin:0}
 .toc{position:sticky;top:0;z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
 .toc .wrap{display:flex;gap:8px;overflow-x:auto;padding-block:10px;scrollbar-width:thin}
 .toc a{flex:none;display:inline-flex;align-items:center;min-height:40px;padding:4px 16px;border-radius:999px;background:var(--panel);text-decoration:none;font-size:15px;font-weight:600}
-@media(max-width:900px){.toc{position:static}}
+@media(max-width:600px){.toc{position:static}}
+.install{background:var(--t3);border-bottom:1px solid var(--line)}
+.ins-row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;padding-block:12px}
+.ins-row p{margin:0;flex:1 1 18em;font-size:15.5px;line-height:1.6}
+.ibtn{font:600 15px "IBM Plex Sans Arabic",Tahoma,sans-serif;min-height:44px;padding:6px 18px;border-radius:999px;border:0;background:var(--leaf);color:#fff;cursor:pointer}
+.ibtn.ghost{background:var(--bg);color:var(--ink);border:1.5px solid var(--line)}
+.ibtn.x{background:none;color:var(--muted);padding:6px 12px;min-width:44px}
+.ibtn:focus-visible{outline:3px solid var(--lemon);outline-offset:2px}
+.how{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;padding-bottom:14px}
+.how-card{background:var(--bg);border-radius:14px;padding:12px 14px;font-size:15px;line-height:1.7;border:1.5px solid var(--line)}
+.how-card.mine{border-color:var(--leaf2)}
+.how-card b{display:block;font-size:15.5px}
+.how-card svg{width:20px;height:20px;vertical-align:-4px;color:var(--leaf)}
+@media(max-width:600px){.how{grid-template-columns:minmax(0,1fr)}}
 .sec{padding:clamp(32px,5vw,60px) 0}
 .intro{max-width:44em;margin:0 0 22px;color:var(--muted)}
 .diag{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
@@ -130,8 +154,9 @@ h3{font-size:clamp(20px,2.4vw,24px);line-height:1.45;margin:0}
 .row.mo span{font:800 15px "Noto Kufi Arabic",Tahoma,sans-serif;color:var(--c)}
 footer{background:var(--panel);padding:28px 0 36px;font-size:14.5px;color:var(--muted)}
 footer p{margin:4px 0;max-width:52em}
-@media(max-width:900px){.diag{grid-template-columns:repeat(2,minmax(0,1fr))}.note{grid-template-columns:1fr}}
-@media(max-width:820px){.step{grid-template-columns:42px minmax(0,1fr);gap:8px 14px}.num{font-size:36px}.step .fig{grid-column:1/-1;margin-top:8px}}
+@media(max-width:900px){.note{grid-template-columns:1fr}.diag{gap:12px}.diag figcaption{font-size:14px}}
+@media(max-width:640px){.diag{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:820px){.step{grid-template-columns:42px minmax(0,1fr);gap:8px 14px}.num{font-size:36px}.step .fig{grid-column:1/-1;margin-top:8px;width:100%;max-width:560px}}
 @media(max-width:600px){
   body{font-size:16.5px}
   .stations{grid-template-columns:minmax(0,1fr);gap:10px}
@@ -219,6 +244,31 @@ footer p{margin:4px 0;max-width:52em}
     </div>
   </div>
 </header>
+
+<div class="install" id="install" hidden>
+  <div class="wrap">
+    <div class="ins-row">
+      <p><b>ثبّت الخطة على جوالك أو جهازك اللوحي</b> لتفتحها بلمسة من الشاشة الرئيسية، حتى بدون إنترنت.</p>
+      <button type="button" class="ibtn" id="installBtn" hidden>تثبيت</button>
+      <button type="button" class="ibtn ghost" id="howBtn" aria-expanded="false" aria-controls="how">الطريقة</button>
+      <button type="button" class="ibtn x" id="hideIns" aria-label="إخفاء">إخفاء</button>
+    </div>
+    <div class="how" id="how" hidden>
+      <div class="how-card" data-os="ios">
+        <b>آيفون وآيباد</b>
+        اضغط زر المشاركة
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12M8 7l4-4 4 4" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 10H5v11h14V10h-3" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/></svg>
+        في Safari، ثم اختر «إضافة إلى الشاشة الرئيسية»، ثم «إضافة».
+      </div>
+      <div class="how-card" data-os="android">
+        <b>أندرويد</b>
+        افتح قائمة المتصفح
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="5" r="2" fill="currentColor"/><circle cx="12" cy="12" r="2" fill="currentColor"/><circle cx="12" cy="19" r="2" fill="currentColor"/></svg>
+        في Chrome أو Samsung Internet، ثم اختر «تثبيت التطبيق» أو «إضافة إلى الشاشة الرئيسية».
+      </div>
+    </div>
+  </div>
+</div>
 
 <nav class="toc" aria-label="أقسام الصفحة">
   <div class="wrap">
@@ -844,7 +894,7 @@ footer p{margin:4px 0;max-width:52em}
 <footer>
   <div class="wrap">
     <p>إرشادات عامة لشجرة ليمون منزلية في جدة، مبنية على صور الشجرة نفسها. للإصابات الشديدة أو الشك في مرض، استشر مشتلاً أو مختصاً زراعياً.</p>
-    <p>الصور من الشجرة، والرسوم توضيحية. علامات «تمّت» تُحفظ في متصفحك فقط.</p>
+    <p>الصور من الشجرة، والرسوم توضيحية. علامات «تمّت» تُحفظ في متصفحك فقط. يمكن تثبيت الصفحة على الشاشة الرئيسية، وتفتح بعدها حتى بدون إنترنت.</p>
   </div>
 </footer>
 
@@ -919,6 +969,51 @@ footer p{margin:4px 0;max-width:52em}
     paint();
   });
   paint();
+
+  const band = document.getElementById('install');
+  const installBtn = document.getElementById('installBtn');
+  const howBtn = document.getElementById('howBtn');
+  const how = document.getElementById('how');
+  const HIDE = 'lemon-install-hidden';
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+  let dismissed = false;
+  try { dismissed = localStorage.getItem(HIDE) === '1'; } catch (e) {}
+  const ua = navigator.userAgent;
+  const isIOS = /iPhone|iPad|iPod/.test(ua) || (/Macintosh/.test(ua) && navigator.maxTouchPoints > 1);
+  const isAndroid = /Android/.test(ua);
+  const touch = window.matchMedia('(pointer: coarse)').matches || navigator.maxTouchPoints > 0;
+  const showBand = () => { if (!standalone && !dismissed) band.hidden = false; };
+  const mine = document.querySelector('.how-card[data-os="' + (isIOS ? 'ios' : isAndroid ? 'android' : '') + '"]');
+  if (mine) { mine.classList.add('mine'); how.prepend(mine); }
+  if (touch || isIOS || isAndroid) showBand();
+
+  let deferred = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferred = e;
+    installBtn.hidden = false;
+    showBand();
+  });
+  installBtn.addEventListener('click', async () => {
+    if (!deferred) return;
+    deferred.prompt();
+    try { await deferred.userChoice; } catch (e) {}
+    deferred = null;
+    installBtn.hidden = true;
+  });
+  window.addEventListener('appinstalled', () => { band.hidden = true; });
+  howBtn.addEventListener('click', () => {
+    how.hidden = !how.hidden;
+    howBtn.setAttribute('aria-expanded', String(!how.hidden));
+  });
+  document.getElementById('hideIns').addEventListener('click', () => {
+    band.hidden = true;
+    try { localStorage.setItem(HIDE, '1'); } catch (e) {}
+  });
+
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    navigator.serviceWorker.register('sw.js').catch(() => {});
+  }
 }
 </script>
 </body>
